@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { getProducts } from "@/lib/supabase";
 import { Product } from "@/types/product";
+import ProductCard from "./ProductCard";
 
 export default function ProductGrid() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,30 +38,7 @@ export default function ProductGrid() {
       </h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            <div className="relative h-48 w-full">
-              <Image
-                src={product.image || "/fallback-image.jpg"}
-                alt={product.title}
-                fill
-                style={{ objectFit: "cover" }}
-                className="transition-transform duration-300 hover:scale-105"
-                unoptimized
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {product.title}
-              </h3>
-              <p className="mt-1 text-gray-500">${product.price.toFixed(2)}</p>
-              <button className="mt-3 w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-2 px-4 rounded-lg hover:opacity-90 transition">
-                Add to Cart
-              </button>
-            </div>
-          </div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

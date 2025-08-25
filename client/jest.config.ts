@@ -11,6 +11,7 @@ const customJestConfig: Config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@/lib/supabase$": "<rootDir>/src/__mocks__/supabase.ts",
   },
   testMatch: [
     "**/_tests_/**/*.test.[jt]s?(x)",

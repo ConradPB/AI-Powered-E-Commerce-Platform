@@ -1,15 +1,20 @@
+// Mock supabase BEFORE importing the page so the module that creates a client
+// (which uses env vars) never runs in tests.
+jest.mock("@/lib/supabase", () => ({
+  getProducts: jest.fn(),
+}));
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import HomePage from "@/app/page";
 import * as supabaseLib from "@/lib/supabase";
+import HomePage from "@/app/page";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import type { Product } from "@/types/product";
 
-jest.mock("@/lib/supabase");
-
+// typed reference to mocked function (no `any`)
 const mockGetProducts = supabaseLib.getProducts as jest.MockedFunction<
-  () => Promise<{ data: Product[] | null; error: string | null }>
+  typeof supabaseLib.getProducts
 >;
 
 describe("Home Page", () => {
@@ -19,12 +24,16 @@ describe("Home Page", () => {
       title: "Laptop",
       price: 999.99,
       image: "https://placehold.co/400x300",
+      description: "",
+      category: "General",
     },
     {
       id: "2",
       title: "Headphones",
       price: 99.99,
       image: "https://placehold.co/400x300",
+      description: "",
+      category: "General",
     },
   ];
 
@@ -35,6 +44,7 @@ describe("Home Page", () => {
   it("renders product cards without crashing", async () => {
     mockGetProducts.mockResolvedValue({ data: fakeProducts, error: null });
 
+    // HomePage is an async server component in your app so call it and render the result
     const page = await HomePage();
     render(<Provider store={store}>{page}</Provider>);
 
